@@ -55,6 +55,9 @@ public struct YPColors {
 
     /// The default color of all navigation bars except album's.
     public var defaultNavigationBarColor: UIColor = .offWhiteOrBlack
+    
+    /// Default general YPImagePicker background color
+    public var generalBackgroundColor: UIColor = .ypSystemBackground
 
     // MARK: - Trimmer
     
