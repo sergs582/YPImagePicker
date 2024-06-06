@@ -14,5 +14,9 @@ extension UIBarButtonItem {
     func setFont(font: UIFont?, forState state: UIControl.State) {
         guard font != nil else { return }
         self.setTitleTextAttributes([NSAttributedString.Key.font: font!], for: .normal)
+        self.setTitleTextAttributes([NSAttributedString.Key.font: font!], for: .selected)
+        self.setTitleTextAttributes([NSAttributedString.Key.font: font!], for: .highlighted)
+        self.setTitleTextAttributes([NSAttributedString.Key.font: font!], for: .disabled)
+        self.setTitleTextAttributes([NSAttributedString.Key.font: font!], for: .focused)
     }
 }

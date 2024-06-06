@@ -174,7 +174,7 @@ public final class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
         trimmerContainerView.Bottom == trimBottomItem.Top
 
         trimmerView.fillHorizontally(padding: 30).centerVertically()
-        trimmerView.Height == trimmerContainerView.Height / 3
+        trimmerView.Height == 70
 
         coverThumbSelectorView.followEdges(trimmerView)
     }

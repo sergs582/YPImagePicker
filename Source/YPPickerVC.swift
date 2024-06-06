@@ -213,7 +213,35 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
             self?.setTitleViewWithTitle(aTitle: album.title)
             navVC.dismiss(animated: true, completion: nil)
         }
-        present(navVC, animated: true, completion: nil)
+        
+        let alert = UIAlertController(title: "Select media source", message: nil, preferredStyle: .actionSheet)
+        
+        let cameraAction = UIAlertAction(title: "Take Photo", style: .default) { [weak self] _ in
+            self?.presentImagePicker()
+        }
+        
+        let changeAlbumAction = UIAlertAction(title: "Change Album", style: .default) { [weak self] _ in
+            self?.present(navVC, animated: true, completion: nil)
+        }
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        alert.addAction(changeAlbumAction)
+        alert.addAction(cameraAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
+    }
+    
+    func presentImagePicker() {
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            let imagePickerController = UIImagePickerController()
+            imagePickerController.delegate = self
+            imagePickerController.sourceType = .camera
+            imagePickerController.cameraCaptureMode = .photo
+            imagePickerController.allowsEditing = true
+            present(imagePickerController, animated: true, completion: nil)
+        }
     }
     
     func setTitleViewWithTitle(aTitle: String) {
@@ -250,7 +278,6 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
             
             let button = UIButton()
             button.addTarget(self, action: #selector(navBarTapped), for: .touchUpInside)
-            button.setBackgroundColor(UIColor.white.withAlphaComponent(0.5), forState: .highlighted)
             
             titleView.subviews(
                 label,
@@ -300,7 +327,6 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
         }
 
         navigationItem.rightBarButtonItem?.setFont(font: YPConfig.fonts.rightBarButtonFont, forState: .normal)
-        navigationItem.rightBarButtonItem?.setFont(font: YPConfig.fonts.rightBarButtonFont, forState: .disabled)
         navigationItem.leftBarButtonItem?.setFont(font: YPConfig.fonts.leftBarButtonFont, forState: .normal)
     }
     
@@ -382,5 +408,27 @@ extension YPPickerVC: YPLibraryViewDelegate {
     
     public func libraryViewShouldAddToSelection(indexPath: IndexPath, numSelections: Int) -> Bool {
         return pickerVCDelegate?.shouldAddToSelection(indexPath: indexPath, numSelections: numSelections) ?? true
+    }
+}
+
+extension YPPickerVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if let editedImage = info[.editedImage] as? UIImage {
+            didSelectItems?(
+                [YPMediaItem.photo(p: YPMediaPhoto(image: editedImage, fromCamera: true))]
+            )
+        } else if let pickedImage = info[.originalImage] as? UIImage {
+            didSelectItems?(
+                [YPMediaItem.photo(p: YPMediaPhoto(image: pickedImage, fromCamera: true))]
+            )
+        }
+        
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+
+    public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
     }
 }
