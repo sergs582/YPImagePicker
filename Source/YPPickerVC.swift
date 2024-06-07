@@ -239,7 +239,7 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
             imagePickerController.delegate = self
             imagePickerController.sourceType = .camera
             imagePickerController.cameraCaptureMode = .photo
-            imagePickerController.allowsEditing = true
+            imagePickerController.allowsEditing = false
             present(imagePickerController, animated: true, completion: nil)
         }
     }
@@ -414,11 +414,7 @@ extension YPPickerVC: YPLibraryViewDelegate {
 extension YPPickerVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
-        if let editedImage = info[.editedImage] as? UIImage {
-            didSelectItems?(
-                [YPMediaItem.photo(p: YPMediaPhoto(image: editedImage, fromCamera: true))]
-            )
-        } else if let pickedImage = info[.originalImage] as? UIImage {
+        if let pickedImage = info[.originalImage] as? UIImage {
             didSelectItems?(
                 [YPMediaItem.photo(p: YPMediaPhoto(image: pickedImage, fromCamera: true))]
             )
